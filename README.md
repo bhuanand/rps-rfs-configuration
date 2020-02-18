@@ -16,6 +16,8 @@ Without RPS configuration, the CPU core '0' handles the soft_irq - interrupt gen
 
 5. RFS configuration is applied on top of RPS configuration
 
+Applying these configurations on AWS EC2 instances might help in acheiving more PPS as we are limited by number of queues available on an EC2 instance (8 queues)
+
 ## Reference Links - RPS/RFS
 1. https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/network-rps
 2. https://balodeamit.blogspot.com/2013/10/receive-side-scaling-and-receive-packet.html
