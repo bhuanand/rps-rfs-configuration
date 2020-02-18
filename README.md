@@ -1,6 +1,21 @@
 # rps-rfs-configuration
 A script for configuring the Receive Packet Steering (RPS) and Receive Flow Steering (RFS) on linux
 
+This script helps in configuring RPS and RFS on a linux machine and works as follows.
+1. First it finds the number of CPU cores available on system
+2. Finds the number of tx/rx queues available on specified interface
+3. Finds the CPU core which is assigned to process the interrupts and handle packets for a tx/rx queue using `/proc/interrupts` output.
+4. Configures the CPU mask for RPS based on CPU core set for a particular queue. 
+
+For example, lets say rx-0 queue was assigned CPU core 0 and there are 8 cores available on system. 
+
+if smp_affinity for rx-0 queue - CPU core '0' specified as mask '00000001' (from `/proc/interrupt` output)
+then, RPS for rx-0 is configured as '11111110' - Which means interrupt is still handled by CPU core '0' but processing of packets is now distributed among CPU cores 1-7. This reduces load on CPU core '0' and promotes high PPS (packets per second)
+
+Without RPS configuration, the CPU core '0' handles the soft_irq - interrupt generated when a packet is received on interface and also processes the packet - sending the packet to TCP/IP stack. On configuring RPS - this packet processing is offloaded to other cores.
+
+5. RFS configuration is applied on top of RPS configuration
+
 ## Reference Links - RPS/RFS
 1. https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/network-rps
 2. https://balodeamit.blogspot.com/2013/10/receive-side-scaling-and-receive-packet.html
@@ -42,4 +57,4 @@ Configuring /sys/class/net/eth0/queues/rx-0/rps_flow_cnt with value 2048
 #
 ```
 
-_Note_ You might want to update the regex used to match the interface queue in `/proc/interrupt` output. This is used to grab the queue number and associated CPU core handling the interrupt
+_*Note* You might want to update the regex in rps.py script which is used to match the interface queue in `/proc/interrupt` output. This is used to grab the queue number and associated CPU core handling the interrupt_
