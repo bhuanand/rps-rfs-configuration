@@ -39,4 +39,7 @@ Configuring /sys/class/net/eth0/queues/rx-6/rps_flow_cnt with value 2048
 Configuring /sys/class/net/eth0/queues/rx-4/rps_flow_cnt with value 2048
 Configuring /sys/class/net/eth0/queues/rx-2/rps_flow_cnt with value 2048
 Configuring /sys/class/net/eth0/queues/rx-0/rps_flow_cnt with value 2048
-#```
+#
+```
+
+_Note_ You might want to update the regex used to match the interface queue in `/proc/interrupt` output. This is used to grab the queue number and associated CPU core handling the interrupt
